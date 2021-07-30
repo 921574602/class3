@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zr.class3.mapper.BlogMapper">
+
+	<resultMap type="com.zr.class3.model.Country" id="a">
+		<id property="Code" column="Code" />
+		<result property="Name" column="Continent" />
+		<result property="Continent" column="Name" />
+		<result property="Region" column="Region" />
+	</resultMap>
+
+	<resultMap type="com.zr.class3.model.Country_Language" id="un">
+		<association property="c" javaType="com.zr.class3.model.Country">
+			<id property="Code" column="Code" />
+			<result property="Name" column="Continent" />
+			<result property="Continent" column="Name" />
+			<result property="Region" column="Region" />
+		</association>
+		<collection property="languages" ofType="com.zr.class3.model.Language">
+			<id property="name" column="Language" />
+			<result property="offiec" column="IsOfficial" />
+		</collection>
+	</resultMap>
+
+
+
+
+	<resultMap type="com.zr.class3.model.Language" id="lan">
+		<id property="name" column="Language" />
+		<result property="offiec" column="IsOfficial" />
+	</resultMap>
+
+
+	<resultMap type="com.zr.class3.model.Country_Language" id="nice">
+		<association property="c" javaType="com.zr.class3.model.Country">
+			<id property="Code" column="Code" />
+			<result property="Name" column="Continent" />
+			<result property="Continent" column="Name" />
+			<result property="Region" column="Region" />
+		</association>
+		<collection property="languages" column="Code"
+			ofType="com.zr.class3.model.Language" select="searchlanguage" />
+	</resultMap>
+
+	<select id="selectBlogById" resultType="com.zr.class3.model.Blog">
+		select ID,Name from city
+		where ID = #{ID}
+	</select>
+
+	<select id="searchcountry" resultType="com.zr.class3.model.Country">
+		select
+		Code,Name,Continent,Region from country where Code = #{Code}
+	</select>
+
+	<select id="searchcountry_map" resultType="Map">
+		select
+		Code,Name,Continent,Region from country where Code = #{Code}
+	</select>
+
+	<select id="searchcountry_resultType" resultMap="a">
+		select
+		Code,Name,Continent,Region from country where Code = #{Code}
+	</select>
+
+	<select id="searchcountry_language" resultMap="un">
+		select Code, Name,
+		Continent, Region, Language, IsOfficial from country ,
+		countrylanguage
+		where Code = CountryCode AND Code = #{Code}
+	</select>
+
+	<select id="searchcountry_lan" resultMap="nice">
+		select
+		Code,Name,Continent,Region from country where Code = #{Code}
+	</select>
+
+
+	<select id="searchlanguage" resultMap="lan">
+		select Language,
+		IsOfficial from country , countrylanguage where Code =
+		CountryCode AND
+		Code = #{Code}
+	</select>
+
+
+	<insert id="insertcity">
+		insert into city (ID,name)
+		values
+		(#{city.ID},#{city.name})
+	</insert>
+
+	<update id="updatecity">
+		update city set
+		name = #{name}
+		where ID = #{ID}
+	</update>
+	
+	
+	<select id="searchlanguage_choose" resultMap="lan">
+		select Language,
+		IsOfficial from country , countrylanguage where Code =
+		CountryCode AND
+		Code = #{Code}
+		<if test="type == 1">
+        AND IsOfficial = 'F'
+    	</if>
+	</select>
+</mapper>
